@@ -2,10 +2,10 @@ from pathlib import Path
 
 from graphql import GraphQLSchema, Source, build_schema, parse, validate
 
-from myapp.queries.marketplaceCategories import (
+from api.queries.marketplaceCategories import (
     get_marketplace_categories,
 )
-from myapp.queries.repository import (
+from api.queries.repository import (
     get_repository_issues_query,
 )
 

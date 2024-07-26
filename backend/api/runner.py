@@ -1,7 +1,7 @@
 import time
 from typing import Any
 
-from myapp.client.base import BaseGraphQLClientProtocol
+from api.client.base import BaseGraphQLClientProtocol
 
 
 def check_execute(fn):

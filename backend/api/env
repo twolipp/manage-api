@@ -1,0 +1,4 @@
+# Add github_token
+GITHUB_TOKEN=<GITHUB_TOKEN>
+
+GITHUB_GRAPHQL_ENDPOINT=https://api.github.com/graphql

@@ -5,10 +5,10 @@ from dotenv import load_dotenv
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from myapp.client.requests_client import RequestsClient
-from myapp.client.gql_client import GqlClient
-from myapp.runner import GraphQLClientRunner
-from myapp.queries.repository import repository_issues_query
+from api.client.requests_client import RequestsClient
+from api.client.gql_client import GqlClient
+from api.runner import GraphQLClientRunner
+from api.queries.repository import repository_issues_query
 
 
 
