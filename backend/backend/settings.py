@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = "django-insecure-#la$=3w%)n!7lhc@jc(c3^m5*45#o0q1nqft01+3q6ntbmi)2v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +38,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    #other apps
+    "corsheads",
+    "graphene_django"
 ]
 
 MIDDLEWARE = [
@@ -47,7 +52,17 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    #other middleware
+     "corsheders.middleware.CorsMiddleware",
+
 ]
+
+CORS_ALLOWED_ORIGINS =['http://localhost:3000']
+
+GRAPHENE = {
+    "SCHEMA": "django_root.schema.schema"
+}
 
 ROOT_URLCONF = "backend.urls"
 
@@ -75,8 +90,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv('POSTGRES_DB', 'postgres'),
+        "USER": os.getenv('POSTGRES_USER', 'postgres'),
+        "PASSWORD": os.getenv('POSTGRES_PASSWORD', 'postgres'),
+        "HOST": os.getenv('POSTGRES_HOST', 'db'),
+        "PORT": '5432'
     }
 }
 
@@ -116,6 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
