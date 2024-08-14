@@ -1,21 +1,19 @@
-FROM python:3.10-alpine
+FROM node:18-alpine
 
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
+WORKDIR /manage-api/frontend
 
-WORKDIR /manage-api/backend
+COPY package*.json .
 
-COPY requirements.txt .
-
-RUN apk update && \
-    apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev python3-dev && \
-    apk add --no-cache geos gdal proj binutils postgresql-client && \
-    pip install --no-cache-dir -r requirements.txt && \
-    apk del .build-deps
+RUN yarn install
 
 COPY . .
 
-COPY wait-for-postgresql.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN yarn build
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+EXPOSE 3000
+
+# DEV MODE
+CMD ["yarn", "dev"]
+
+# PROD MODE
+# CMD [ "yarn", "start" ]
