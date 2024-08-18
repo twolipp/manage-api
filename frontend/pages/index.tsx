@@ -1,20 +1,31 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { gql, useQuery } from "@apollo/client";
+
+const QUERY = gql`
+  query {
+    hello
+  }
+`;
 
 const HomePage = () => {
-  const [data, setData] = useState(null);
+  const { data, loading, error } = useQuery(QUERY);
+  console.log(data)
 
-  useEffect(() => {
-    fetch("http://localhost:8000/graphql/")
-      .then((res) => res.json())
-      .then((data) => setData(data.data));
-  });
+  if (loading) {
+    return <h2>Loading...</h2>;
+  }
+
+  if (error) {
+    console.error(error);
+    return null;
+  }
+
   return (
     <div>
       <h1>An Awesome Template </h1>
       <h3>On Django, Next, Postgres, and Docker </h3>
 
-      <p>{data}</p>
+      <p>{data.hello.toString()}</p>
     </div>
   );
 };

@@ -64,11 +64,9 @@ CORS_ALLOWED_ORIGINS = [
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 GRAPHENE = {
-    "SCHEMA": "django_root.schema.schema"
+    "SCHEMA": "backend.schema.schema"
 }
-
 ROOT_URLCONF = "backend.urls"
 
 TEMPLATES = [
