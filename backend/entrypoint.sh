@@ -1,5 +1,5 @@
 # Wait for Postgres to be ready
-/wait-for-postgres.sh postgresdb
+#/wait-for-postgres.sh postgresdb
 
 
 python manage.py migrate

@@ -96,13 +96,14 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'postgres'),
+        'NAME': os.getenv('POSTGRES_DB', 'manage-api'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
         'HOST': os.getenv('DATABASE_HOST', 'db'),
         'PORT': '5432',
     }
 }
+
 
 # A dictionary named CACHES, which contains caching configurations.
 CACHES = {
@@ -112,7 +113,7 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
 
         # A LOCATION parameter to specify the Redis server's address and port.
-        "LOCATION": "redis://127.0.0.1:6379",
+        "LOCATION": "redis://redis:6379",
     }
 }
 
