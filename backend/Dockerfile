@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 # Set the working directory for the container
-WORKDIR /app/backend
+WORKDIR /app
 
 # Copy the Python dependency file into the container
 COPY requirements.txt .
@@ -20,14 +20,3 @@ RUN apk update && \
 
 # Copy the entire project into the container
 COPY . .
-
-# Copy the wait-for-postgres.sh script into the container and make it executable
-COPY wait-for-postgres.sh /wait-for-postgres.sh
-RUN chmod +x /wait-for-postgres.sh
-
-# Copy the entrypoint.sh script into the container and make it executable
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Set the container's entrypoint to the entrypoint.sh script
-ENTRYPOINT ["/entrypoint.sh"]

@@ -1,23 +1,35 @@
 services:
   db:
     image: postgres:14-alpine
-    ports:
-      - "5431:5432"
+    container_name: db
 
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=manage-api
 
     volumes:
-      - ./data/db:/var/lib/postgresql/data/
+      - postgresql:/var/lib/postgresql/data/
 
-    networks:
-      custom_network:
-        aliases:
-          - ${PROJECT_NAME}_db.local
+  pgadmin:
+   container_name: pgadmin4_container2
+   image: dpage/pgadmin4
+   environment:
+     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+     PGADMIN_DEFAULT_PASSWORD: secret
+     PGADMIN_LISTEN_PORT: 80
+   ports:
+     - "8080:80"
+   volumes:
+     - pgadmin-data:/var/lib/pgadmin
+
+  redis:
+    container_name: redis
+    restart: unless-stopped
+    image: redis:7.0.5-alpine
 
   frontend:
+    container_name: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -26,48 +38,33 @@ services:
       - "3000:3000"
 
     volumes:
-      - ./frontend:/app/frontend
+      - ./frontend:/app
       - node_modules:/app/frontend/node_modules
 
     depends_on:
       - backend
 
-    networks:
-      custom_network:
-        aliases:
-          - ${PROJECT_NAME}_react.local
-
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - DATABASE_HOST=db
+    env_file: .env
+    container_name: backend
+    command: python manage.py runserver
 
     ports:
       - "8000:8000"
 
     volumes:
-      - ./backend:/manage-api/backend
-      - ./static:/manage-api/backend/static
+      - ./backend:/app
 
     depends_on:
       - db
 
-    networks:
-      custom_network:
-        aliases:
-          - ${PROJECT_NAME}_django.local
-
-networks:
-  custom_network:
-    name: ${PROJECT_NAME}
-    driver: bridge
-
 volumes:
   node_modules:
+    driver: local
+  postgresql:
+    driver: local
+  pgadmin-data:
     driver: local
