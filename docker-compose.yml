@@ -10,12 +10,17 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
 
     volumes:
-      - ./data/db:/var/lib/postgresql/data/
+      - postgresql:/var/lib/postgresql/data/
 
     networks:
       custom_network:
         aliases:
           - ${PROJECT_NAME}_db.local
+  redis:
+    restart: unless-stopped
+    image: redis:7.0.5-alpine
+    expose:
+      - 6379
 
   frontend:
     build:
@@ -41,6 +46,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    env_file: .env
+    container_name: backend
 
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -52,8 +59,9 @@ services:
       - "8000:8000"
 
     volumes:
-      - ./backend:/manage-api/backend
-      - ./static:/manage-api/backend/static
+      - ./backend:/app/backend
+      - ./backend:/app/backend/api
+      - ./static:/app/backend/static
 
     depends_on:
       - db
@@ -70,4 +78,6 @@ networks:
 
 volumes:
   node_modules:
+    driver: local
+  postgresql:
     driver: local

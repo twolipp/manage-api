@@ -28,7 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
-# Application definition
+CUSTOM_APPS = [
+    'api.apps.ApiConfig',
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -41,7 +43,7 @@ INSTALLED_APPS = [
     #other apps
     "corsheaders",
     "graphene_django"
-]
+] + CUSTOM_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -65,7 +67,7 @@ CORS_ALLOWED_ORIGINS = [
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 GRAPHENE = {
-    "SCHEMA": "backend.schema.schema"
+    "SCHEMA": "api.schema.schema"
 }
 ROOT_URLCONF = "backend.urls"
 
@@ -99,6 +101,18 @@ DATABASES = {
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
         'HOST': os.getenv('DATABASE_HOST', 'db'),
         'PORT': '5432',
+    }
+}
+
+# A dictionary named CACHES, which contains caching configurations.
+CACHES = {
+    # "default" is the alias.
+    "default": {
+        # Here, we're using the Redis cache backend.
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+
+        # A LOCATION parameter to specify the Redis server's address and port.
+        "LOCATION": "redis://127.0.0.1:6379",
     }
 }
 
