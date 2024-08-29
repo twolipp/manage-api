@@ -117,6 +117,10 @@ CACHES = {
     }
 }
 
+# Celery settings
+CELERY_BROKER_URL = os.getenv("BROKER_URL", "redis://localhost:6379")
+CELERY_RESULT_BACKEND = os.getenv("RESULT_BACKEND", "redis://localhost:6379")
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
