@@ -3,8 +3,8 @@ import graphene
 from graphene_django import DjangoObjectType 
 from .models import Programmer 
 
-class GreetQuery(graphene.ObjectType):
-    hello = graphene.String(default_value="Hi!")
+# class GreetQuery(graphene.ObjectType):
+#     hello = graphene.String(default_value="Hi!")
 
 
 class ProgrammerDetails(DjangoObjectType): 
@@ -13,7 +13,7 @@ class ProgrammerDetails(DjangoObjectType):
         fields = "__all__"
 
 
-class GetProgrammer(graphene.ObjectType):
+class Query(graphene.ObjectType):
     all_programmers = graphene.List(ProgrammerDetails)
     programmer = graphene.Field(ProgrammerDetails, programmer_id=graphene.Int())
 
@@ -22,10 +22,5 @@ class GetProgrammer(graphene.ObjectType):
 
     def resolve_programmer(self, info, programmer_id):
         return Programmer.objects.get(pk=programmer_id)
-    
-class Query(graphene.ObjectType):
-    get_programmer = GetProgrammer.Field()
-    get_greet = GreetQuery.Field()
-     
-    
+
 schema = graphene.Schema(query=Query)

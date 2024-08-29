@@ -12,34 +12,39 @@ services:
       - postgresql:/var/lib/postgresql/data/
 
   pgadmin:
-   container_name: pgadmin4_container2
-   image: dpage/pgadmin4
-   environment:
-     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-     PGADMIN_DEFAULT_PASSWORD: secret
-     PGADMIN_LISTEN_PORT: 80
-   ports:
-     - "8080:80"
-   volumes:
-     - pgadmin-data:/var/lib/pgadmin
+    container_name: pgadmin4_container2
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
 
-  redis:
-    container_name: redis
-    restart: unless-stopped
-    image: redis:7.0.5-alpine
+  # redis:
+  #   container_name: redis
+  #   restart: unless-stopped
+  #   image: redis:7.0.5-alpine
 
   frontend:
     container_name: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /manage-api/frontend
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
 
     ports:
       - "3000:3000"
-
-    volumes:
-      - ./frontend:/app
-      - node_modules:/app/frontend/node_modules
 
     depends_on:
       - backend
@@ -50,13 +55,19 @@ services:
       dockerfile: Dockerfile
     env_file: .env
     container_name: backend
-    command: python manage.py runserver
+
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /app/backend
+        - action: rebuild
+          path: requirements.txt
+
+    command: python manage.py runserver 0.0.0.0:8000
 
     ports:
       - "8000:8000"
-
-    volumes:
-      - ./backend:/app
 
     depends_on:
       - db
