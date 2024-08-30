@@ -74,8 +74,11 @@ services:
 
   worker:
     restart: unless-stopped
-    command: celery -A api worker -l info
+    command: sleep 6000
+    # celery -A celery worker
     container_name: worker-celery
+    volumes:
+      - "./backend:/app"
     build:
       context: ./backend
       dockerfile: Dockerfile
