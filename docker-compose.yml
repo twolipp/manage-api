@@ -74,9 +74,8 @@ services:
 
   worker:
     restart: unless-stopped
-    command: sleep 6000
-    # celery -A celery worker
-    container_name: worker-celery
+    command: celery -A backend.celery worker -B -l INFO
+    container_name: celery
     volumes:
       - "./backend:/app"
     build:
