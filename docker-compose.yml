@@ -12,7 +12,7 @@ services:
       - postgresql:/var/lib/postgresql/data/
 
   pgadmin:
-    container_name: pgadmin4_container2
+    container_name: pgadmin-container
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
@@ -23,10 +23,10 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 
-  # redis:
-  #   container_name: redis
-  #   restart: unless-stopped
-  #   image: redis:7.0.5-alpine
+  redis:
+    container_name: redis
+    restart: unless-stopped
+    image: redis:7.0.5-alpine
 
   frontend:
     container_name: frontend
@@ -71,6 +71,29 @@ services:
 
     depends_on:
       - db
+
+  worker:
+    restart: unless-stopped
+    command: celery -A backend.celery worker -B -l INFO
+    container_name: celery
+    volumes:
+      - "./backend:/app"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DEBUG=True
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - POSTGRES_HOST=db
+      - POSTGRES_NAME=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=manage-api
+      - POSTGRES_PORT=5432
+    depends_on:
+      - db
+      - redis
 
 volumes:
   node_modules:
