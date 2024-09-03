@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-#la$=3w%)n!7lhc@jc(c3^m5*45#o0q1nqft01+3q6ntbmi)2v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'a507-78-27-163-6.ngrok-free.app']
 
 
 CUSTOM_APPS = [
@@ -42,7 +42,9 @@ INSTALLED_APPS = [
 
     #other apps
     "corsheaders",
-    "graphene_django"
+    "graphene_django",
+    "django_celery_results",
+    "django_celery_beat"
 ] + CUSTOM_APPS
 
 MIDDLEWARE = [
@@ -60,7 +62,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  
+    'http://localhost:3000',
+    'https://a507-78-27-163-6.ngrok-free.app'  
 ]
 
 
@@ -127,6 +130,9 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': 15,
     },
 }
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
 
 
 # Password validation
@@ -170,3 +176,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Github Webhook secret
+
+GITHUB_WEBHOOK_SECRET = os.getenv('GITHUB_WEBHOOK_SECRET', 'password'),

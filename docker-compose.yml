@@ -55,14 +55,16 @@ services:
       dockerfile: Dockerfile
     env_file: .env
     container_name: backend
+    volumes:
+      - ./backend:/app
 
-    develop:
-      watch:
-        - action: sync
-          path: ./backend
-          target: /app/backend
-        - action: rebuild
-          path: requirements.txt
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./backend
+    #       target: /app/backend
+    #     - action: rebuild
+    #       path: requirements.txt
 
     command: python manage.py runserver 0.0.0.0:8000
 
